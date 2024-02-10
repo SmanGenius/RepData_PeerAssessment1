@@ -88,7 +88,7 @@ for (n in 1:61){
       }
   }   
 }
-```
+``` 
 
 Verify if there is not any NA
 
