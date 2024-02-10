@@ -133,10 +133,16 @@ and then we plot a histogram
 total_steps <- df %>%
   group_by(date) %>%
   summarise(total_steps = sum(steps), na.rm=TRUE)
+
+png("plot1.png", width = 480, height = 480)
 hist(total_steps$total_steps, breaks = 10, col="red",xlab = "Total steps taken per  day", main = "Histogram Total Steps")
+dev.off()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+```
+## png 
+##   2
+```
 and finally we obtain the mean, median and max
 
 ```r
