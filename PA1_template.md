@@ -5,15 +5,15 @@ output:
     keep_md: true
 ---
 
-
 ## Loading and preprocessing the data
+
 The first step is load the libraries and prepossessing the data to can use before to analyse the data, so we need to unzip the file and open in a table
 
-```r
+``` r
 library(tidyverse)
 ```
 
-```
+```         
 ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.2     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
@@ -26,12 +26,12 @@ library(tidyverse)
 ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 ```
 
-```r
+``` r
 library(dplyr)
 library(janitor)
 ```
 
-```
+```         
 ## 
 ## Attaching package: 'janitor'
 ## 
@@ -40,13 +40,13 @@ library(janitor)
 ##     chisq.test, fisher.test
 ```
 
-```r
+``` r
 library(lubridate)
 library(ggplot2)
 library(data.table)
 ```
 
-```
+```         
 ## 
 ## Attaching package: 'data.table'
 ## 
@@ -64,20 +64,20 @@ library(data.table)
 ##     transpose
 ```
 
-```r
+``` r
 zipfile <- "activity.zip"
 data_out <- "data_unzip"
 unzip(zipfile, exdir = data_out)
 ```
 
-To can use the data we need to load file in an table, review how is the data organized, the dimession and the structure 
+To can use the data we need to load file in an table, review how is the data organized, the dimession and the structure
 
-```r
+``` r
 df <- read.table("data_unzip/activity.csv",stringsAsFactors=FALSE, header = TRUE, sep = ",")
 head(df)
 ```
 
-```
+```         
 ##   steps       date interval
 ## 1    NA 2012-10-01        0
 ## 2    NA 2012-10-01        5
@@ -87,40 +87,40 @@ head(df)
 ## 6    NA 2012-10-01       25
 ```
 
-```r
+``` r
 dim(df)
 ```
 
-```
+```         
 ## [1] 17568     3
 ```
 
-```r
+``` r
 str(df)
 ```
 
-```
-## 'data.frame':	17568 obs. of  3 variables:
+```         
+## 'data.frame':    17568 obs. of  3 variables:
 ##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
 ##  $ date    : chr  "2012-10-01" "2012-10-01" "2012-10-01" "2012-10-01" ...
 ##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
 ```
 
-In the structure we can see that the colum date is not in  the correct format so, we transform as a date format
+In the structure we can see that the colum date is not in the correct format so, we transform as a date format
 
-```r
+``` r
 df$date <- as.Date(df$date, format = "%Y-%m-%d")
 str(df)
 ```
 
-```
-## 'data.frame':	17568 obs. of  3 variables:
+```         
+## 'data.frame':    17568 obs. of  3 variables:
 ##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
 ##  $ date    : Date, format: "2012-10-01" "2012-10-01" ...
 ##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
 ```
-Now we have a dataframe prepossessed 
 
+Now we have a dataframe prepossessed
 
 ## What is mean total number of steps taken per day?
 
@@ -128,54 +128,51 @@ Fist we obtained the sum o total steps for each day
 
 and then we plot a histogram
 
-
-```r
+``` r
 total_steps <- df %>%
   group_by(date) %>%
   summarise(total_steps = sum(steps), na.rm=TRUE)
 hist(total_steps$total_steps, breaks = 10, col="red",xlab = "Total steps taken per  day", main = "Histogram Total Steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
-and finally we obtain the mean, median and max
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- --> and finally we obtain the mean, median and max
 
-```r
+``` r
 print(max(total_steps$total_steps, na.rm = TRUE))
 ```
 
-```
+```         
 ## [1] 21194
 ```
 
-```r
+``` r
 print(mean(total_steps$total_steps, na.rm = TRUE))
 ```
 
-```
+```         
 ## [1] 10766.19
 ```
 
-```r
+``` r
 print(median(total_steps$total_steps,na.rm = TRUE))
 ```
 
-```
+```         
 ## [1] 10765
 ```
 
-
 ## What is the average daily activity pattern?
 
-The averange of daily activity pattern we can see in the next plot
- First we obtain a table with the averega by pattern
+The averange of daily activity pattern we can see in the next plot First we obtain a table with the averega by pattern
 
-```r
+``` r
 avg_day <- aggregate(df$steps, by = list(df$interval), 
                      FUN = mean, na.rm= TRUE)
 ```
+
 And then we plot it
 
-```r
+``` r
 plot(avg_day$Group.1, avg_day$x, type= "l" , col = "blue", xlab= "Interval", ylab= "Avg Number of steps", main = "Averange of steps by intervals of 5 min")
 ```
 
@@ -185,7 +182,7 @@ plot(avg_day$Group.1, avg_day$x, type= "l" , col = "blue", xlab= "Interval", yla
 
 In the original data frame there are NA values, we completed that NA, to the mean of the intervals
 
-```r
+``` r
 df_not_na <- df
 df_not_na <- mutate(df_not_na,week_day = wday(df$date))
 p <- 0
@@ -201,20 +198,19 @@ for (n in 1:61){
 
 Verify if there is not any NA
 
-
-```r
+``` r
 sum(is.na(df_not_na))
 ```
 
-```
+```         
 ## [1] 0
 ```
+
 ## Are there differences in activity patterns between weekdays and weekends?
 
 Is necessary separate in weekday and weekend to understand the differences between them
 
-
-```r
+``` r
 workday <-  subset(df_not_na,week_day >1 & week_day <7 )
 weekend <- subset(df_not_na, week_day ==1 | week_day ==7)
 avg_work <- aggregate(workday$steps, by = list(workday$interval), 
@@ -224,11 +220,9 @@ avg_weekend <- aggregate(weekend$steps, by = list(weekend$interval),
                      FUN = mean)
 ```
 
-
 Plot to view the differences
 
-
-```r
+``` r
 par(mfrow = c(2,1))
 plot(avg_work$Group.1, avg_work$x, type= "l" , col = "blue", xlab= "Interval", ylab= "Avg Number of steps", main = "Averange of steps by intervals of 5 min Monday to friday")
 plot(avg_weekend$Group.1, avg_weekend$x, type= "l" , col = "red", xlab= "Interval", ylab= "Avg Number of steps", main = "Averange of steps by intervals of 5 min Wekend")
