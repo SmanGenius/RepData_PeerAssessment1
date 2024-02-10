@@ -46,7 +46,7 @@ Fist we obtained the sum o total steps for each day
 
 and then we plot a histogram
 
-```{r}
+```{r warning=FALSE}
 total_steps <- df %>%
   group_by(date) %>%
   summarise(total_steps = sum(steps), na.rm=TRUE)
